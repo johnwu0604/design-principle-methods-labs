@@ -16,7 +16,7 @@ public class Lab1 {
 
 // Parameters: adjust these for desired performance
 
-	private static final int bandCenter = 20;			// Offset from the wall (cm)
+	private static final int bandCenter = 25;			// Offset from the wall (cm)
 	private static final int bandWidth = 5;				// Width of dead band (cm)
 	private static final int motorLow = 50;			// Speed of slower rotating wheel (deg/sec)
 	private static final int motorHigh = 200;			// Speed of the faster rotating wheel (deg/seec)
@@ -30,7 +30,7 @@ public class Lab1 {
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
-	private static final EV3LargeRegulatedMotor upperMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
+	private static final EV3LargeRegulatedMotor sensorMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	
 // Main entry point - instantiate objects used and set up sensor
 	
@@ -65,13 +65,13 @@ public class Lab1 {
 		
 		switch(option) {
 		case Button.ID_LEFT:										// Bang-bang control selected
-			BangBangController bangbang = new BangBangController(leftMotor, rightMotor, upperMotor,
+			BangBangController bangbang = new BangBangController(leftMotor, rightMotor, sensorMotor,
 					 bandCenter, bandWidth, motorLow, motorHigh);
 			usPoller = new UltrasonicPoller(usDistance, usData, bangbang);
 			printer = new Printer(option, bangbang);
 			break;
 		case Button.ID_RIGHT:										// Proportional control selected
-			PController p = new PController(leftMotor, rightMotor, upperMotor, bandCenter, bandWidth);
+			PController p = new PController(leftMotor, rightMotor, sensorMotor, bandCenter, bandWidth);
 			usPoller = new UltrasonicPoller(usDistance, usData, p);
 			printer = new Printer(option, p);
 			break;

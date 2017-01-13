@@ -3,12 +3,13 @@ import lejos.hardware.motor.*;
 
 public class BangBangController implements UltrasonicController{
 	private final int bandCenter, bandwidth;
-	private final int motorLow, motorHigh;
+	private final int motorLow, motorHigh, FILTER_OUT = 20;
 	private int distance;
-	private EV3LargeRegulatedMotor leftMotor, rightMotor, upperMotor;
+	private int filterControl;
+	private EV3LargeRegulatedMotor leftMotor, rightMotor, sensorMotor;
 	
 	public BangBangController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
-			EV3LargeRegulatedMotor upperMotor, int bandCenter, int bandwidth, int motorLow, int motorHigh) {
+			EV3LargeRegulatedMotor sensorMotor, int bandCenter, int bandwidth, int motorLow, int motorHigh) {
 		//Default Constructor
 		this.bandCenter = bandCenter;
 		this.bandwidth = bandwidth;
@@ -16,57 +17,74 @@ public class BangBangController implements UltrasonicController{
 		this.motorHigh = motorHigh;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		this.upperMotor = upperMotor;
+		this.sensorMotor = sensorMotor;
 		
 		// Set all motors to zero speed to allow time for sensors to initialize
-		upperMotor.setSpeed(0);
-		upperMotor.forward();
+		sensorMotor.setSpeed(0);
+		sensorMotor.forward();
 		
 		leftMotor.setSpeed(0);				
 		rightMotor.setSpeed(0);
 		leftMotor.forward();
 		rightMotor.forward();
+		
+		filterControl = 0;
 	}
 	
 	@Override
 	public void processUSData(int distance) {
-		this.distance = distance;
-		
+		// rudimentary filter - toss out invalid samples corresponding to null
+		// signal.
+		if (distance >= 255 && filterControl < FILTER_OUT) {
+			// bad value, do not set the distance var, however do increment the
+			// filter value
+			filterControl++;
+		} else if (distance >= 255) {
+			// We have repeated large values, so there must actually be nothing
+			// there: leave the distance alone
+			this.distance = distance;
+		} else {
+			// distance went below 255: reset filter and leave
+			// distance alone.
+			filterControl = 0;
+			this.distance = distance;
+		}
+
 		// TODO: process a movement based on the us distance passed in (BANG-BANG style)
+		
+		// calculate our offset from the bandCenter
+		int error = this.distance - this.bandCenter - 5; // -5 for distance from sensor to side of vehicle
+		
+		// If both motors are stopped, start moving the vehicle forward 
 		if (!leftMotor.isMoving() && !rightMotor.isMoving()) {
 			steerStraight();
 		}
 		
-		if (!upperMotor.isMoving()){
-			if(upperMotor.getLimitAngle() == 110){
-				upperMotor.setSpeed(500);
-				upperMotor.rotate(-110);
-			}else{
-				upperMotor.setSpeed(500);
-				upperMotor.rotate(110);
-			}
+		// switch the rotation direction of the sensor 
+		if (!sensorMotor.isMoving()){
+			switchSensorDirection(error);
 		}
 		
-		int error = this.distance - this.bandCenter;
-		
+		// Keep moving forward if vehicle is within threshold value
 		if ( Math.abs(error) < this.bandwidth ) {
 			steerStraight();
 		} 
-		else if ( error < 0 ) {
-			if ( error < -10 ) {
-				turnRight();
+		else if ( error < 0 ) { // We are too close to the wall
+			if ( error < -5 ) {
+				turnRight(); // Turn our vehicle to the right
 			} else {
-				steerRight();
+				steerRight(); // Steer our vehicle to the right
 			}
-		} else {
+		} else { 
 			if ( error > 235 ) {
-				steerStraight();
+				// There is a gap in the wall, or it is sensing something very far away
+				// Keep going straight
+				steerStraight(); 
 			} else {
+				// We are too far from the wall, steer left
 				steerLeft();
 			}
 		}
-		
-		
 		
 	}
 
@@ -75,6 +93,36 @@ public class BangBangController implements UltrasonicController{
 		return this.distance;
 	}
 	
+	/**
+	 * A method which switches the direction of the sensor motor
+	 */
+	public void switchSensorDirection(int error) {
+		if(sensorMotor.getLimitAngle() == 110){ // sensor is facing forward
+			if ( error < 0 ) {
+				// If the front of the vehicle is too close to the wall
+				// Keep the sensor forward until the vehicle is turned to a safe distance
+				sensorMotor.setSpeed(0);
+				sensorMotor.rotate(0);
+			} else {
+				sensorMotor.setSpeed(700);
+				sensorMotor.rotate(-110); // move sensor counter-clockwise 110 degrees
+			}
+		}else{ // sensor is facing sideways
+			if ( error < -5 ) {
+				// If the side of the vehicle is too close to the wall
+				// Keep the sensor to the side until the vehicle is turned to a safe distance
+				sensorMotor.setSpeed(0);
+				sensorMotor.rotate(0);
+			} else {
+				sensorMotor.setSpeed(700);
+				sensorMotor.rotate(110); // move sensor clockwise 110 degrees
+			}
+		}
+	}
+	
+	/**
+	 * Method to steer the vehicle in a straight forward direction
+	 */
 	public void steerStraight() {
 		leftMotor.setSpeed(motorHigh);			
 		rightMotor.setSpeed(motorHigh);
@@ -82,13 +130,19 @@ public class BangBangController implements UltrasonicController{
 		rightMotor.forward();
 	}
 	
+	/**
+	 * Method to turn the vehicle right for sharp turns
+	 */
 	public void turnRight() {
-		leftMotor.setSpeed(motorLow);			
+		leftMotor.setSpeed(motorHigh);			
 		rightMotor.setSpeed(0);
 		leftMotor.forward();
 		rightMotor.forward();
 	}
 	
+	/**
+	 * Method to steer the vehicle right
+	 */
 	public void steerRight() {
 		leftMotor.setSpeed(motorHigh);			
 		rightMotor.setSpeed(motorLow);
@@ -96,6 +150,9 @@ public class BangBangController implements UltrasonicController{
 		rightMotor.forward();
 	}
 	
+    /**
+     * Method to steer the vehicle left
+     */
 	public void steerLeft() {
 		leftMotor.setSpeed(motorLow);			
 		rightMotor.setSpeed(motorHigh);

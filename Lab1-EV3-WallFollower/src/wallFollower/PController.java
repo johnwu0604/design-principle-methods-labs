@@ -5,22 +5,22 @@ public class PController implements UltrasonicController {
 	
 	private final int bandCenter, bandwidth;
 	private final int motorStraight = 200, FILTER_OUT = 20;
-	private EV3LargeRegulatedMotor leftMotor, rightMotor, upperMotor;
+	private EV3LargeRegulatedMotor leftMotor, rightMotor, sensorMotor;
 	private int distance;
 	private int filterControl;
 	
 	public PController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
-			EV3LargeRegulatedMotor upperMotor, int bandCenter, int bandwidth) {
+			EV3LargeRegulatedMotor sensorMotor, int bandCenter, int bandwidth) {
 		//Default Constructor
 		this.bandCenter = bandCenter;
 		this.bandwidth = bandwidth;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		this.upperMotor = upperMotor;
+		this.sensorMotor = sensorMotor;
 		
 		// Set all motors to zero speed to allow time for sensors to initialize
-		upperMotor.setSpeed(0);
-		upperMotor.forward();
+		sensorMotor.setSpeed(0);
+		sensorMotor.forward();
 		
 		leftMotor.setSpeed(0);		
 		rightMotor.setSpeed(0);
@@ -60,15 +60,7 @@ public class PController implements UltrasonicController {
 			rightMotor.forward();
 		}
 		
-		if (!upperMotor.isMoving()){
-			if(upperMotor.getLimitAngle() == 110){
-				upperMotor.setSpeed(400);
-				upperMotor.rotate(-110);
-			}else{
-				upperMotor.setSpeed(400);
-				upperMotor.rotate(110);
-			}
-		}
+		int error = this.distance - this.bandCenter;
 		
 	}
 
