@@ -81,25 +81,25 @@ public class PController implements UltrasonicController {
 	 * A method which switches the direction of the sensor motor
 	 */
 	public void switchSensorDirection(int error) {
-		if(sensorMotor.getLimitAngle() == 130){ // sensor is facing forward
-			if ( error < 0 ) { // can't be any error (need large turning radius)
+		if(sensorMotor.getLimitAngle() == 120){ // sensor is facing forward
+			if ( error < -5 ) { // can't be any error (need large turning radius)
 				// If the front of the vehicle is too close to the wall
 				// Keep the sensor forward until the vehicle is turned to a safe distance
 				sensorMotor.setSpeed(0);
 				sensorMotor.rotate(0);
 			} else {
 				sensorMotor.setSpeed(700);
-				sensorMotor.rotate(-130); // move sensor counter-clockwise 110 degrees
+				sensorMotor.rotate(-120); // move sensor counter-clockwise 110 degrees
 			}
 		}else{ // sensor is facing sideways
-			if ( error < -8 ) {
+			if ( error < -5 ) {
 				// If the side of the vehicle is too close to the wall
 				// Keep the sensor to the side until the vehicle is turned to a safe distance
 				sensorMotor.setSpeed(0);
 				sensorMotor.rotate(0);
 			} else {
 				sensorMotor.setSpeed(700);
-				sensorMotor.rotate(65); // move sensor clockwise 110 degrees
+				sensorMotor.rotate(60); // move sensor clockwise 110 degrees
 			}
 		}
 	}
