@@ -52,13 +52,13 @@ public class BangBangController implements UltrasonicController{
 
 		// TODO: process a movement based on the us distance passed in (BANG-BANG style)
 		
+		// calculate our offset from the bandCenter
+		int error = this.distance - this.bandCenter - 5; // -5 for distance from sensor to side of vehicle
+		
 		// If both motors are stopped, start moving the vehicle forward 
 		if (!leftMotor.isMoving() && !rightMotor.isMoving()) {
 			steerStraight();
 		}
-		
-		// calculate our offset from the bandCenter
-		int error = this.distance - this.bandCenter - 5; // -5 for distance from sensor to side of vehicle
 		
 		// switch the rotation direction of the sensor 
 		if (!sensorMotor.isMoving()){
@@ -70,13 +70,13 @@ public class BangBangController implements UltrasonicController{
 			steerStraight();
 		} 
 		else if ( error < 0 ) { // We are too close to the wall
-			if ( !sensorMotor.isMoving() ) { // sensor that isn't moving means we are way too close
+			if ( error < -5 ) {
 				turnRight(); // Turn our vehicle to the right
 			} else {
 				steerRight(); // Steer our vehicle to the right
 			}
 		} else { 
-			if ( error > 100 ) {
+			if ( error > 235 ) {
 				// There is a gap in the wall, or it is sensing something very far away
 				// Keep going straight
 				steerStraight(); 
@@ -97,7 +97,7 @@ public class BangBangController implements UltrasonicController{
 	 * A method which switches the direction of the sensor motor
 	 */
 	public void switchSensorDirection(int error) {
-		if(sensorMotor.getLimitAngle() == 130){ // sensor is facing forward
+		if(sensorMotor.getLimitAngle() == 110){ // sensor is facing forward
 			if ( error < 0 ) {
 				// If the front of the vehicle is too close to the wall
 				// Keep the sensor forward until the vehicle is turned to a safe distance
@@ -105,17 +105,17 @@ public class BangBangController implements UltrasonicController{
 				sensorMotor.rotate(0);
 			} else {
 				sensorMotor.setSpeed(700);
-				sensorMotor.rotate(-130); // move sensor counter-clockwise 110 degrees
+				sensorMotor.rotate(-110); // move sensor counter-clockwise 110 degrees
 			}
 		}else{ // sensor is facing sideways
-			if ( error < -8 ) {
+			if ( error < -5 ) {
 				// If the side of the vehicle is too close to the wall
 				// Keep the sensor to the side until the vehicle is turned to a safe distance
 				sensorMotor.setSpeed(0);
 				sensorMotor.rotate(0);
 			} else {
 				sensorMotor.setSpeed(700);
-				sensorMotor.rotate(65); // move sensor clockwise 110 degrees
+				sensorMotor.rotate(110); // move sensor clockwise 110 degrees
 			}
 		}
 	}
