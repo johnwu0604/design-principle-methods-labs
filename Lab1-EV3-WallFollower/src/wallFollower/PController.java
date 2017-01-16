@@ -4,7 +4,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 public class PController implements UltrasonicController {
 	
 	private final int bandCenter, bandwidth;
-	private final int motorStraight = 200, FILTER_OUT = 20;
+	private final int motorStraight = 150, FILTER_OUT = 20;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor, sensorMotor;
 	private int distance;
 	private int filterControl;
@@ -82,7 +82,7 @@ public class PController implements UltrasonicController {
 	 */
 	public void switchSensorDirection(int error) {
 		if(sensorMotor.getLimitAngle() == 120){ // sensor is facing forward
-			if ( error < -5 ) { // can't be any error (need large turning radius)
+			if ( error < 0 ) { // can't be any error (need large turning radius)
 				// If the front of the vehicle is too close to the wall
 				// Keep the sensor forward until the vehicle is turned to a safe distance
 				sensorMotor.setSpeed(0);
@@ -136,7 +136,7 @@ public class PController implements UltrasonicController {
 	 */
 	public void steerRight(int error) {
 		leftMotor.setSpeed(motorStraight);			
-		rightMotor.setSpeed( 50 / Math.abs(error) );
+		rightMotor.setSpeed( 25 / Math.abs(error) );
 		leftMotor.forward();
 		rightMotor.forward();
 	}
@@ -145,7 +145,7 @@ public class PController implements UltrasonicController {
 	 * Method to steer vehicle to the left based on the error
 	 */
 	public void steerLeft(int error) {
-		leftMotor.setSpeed( 100 / error );			
+		leftMotor.setSpeed( 50 / error );			
 		rightMotor.setSpeed( motorStraight );
 		leftMotor.forward();
 		rightMotor.forward();

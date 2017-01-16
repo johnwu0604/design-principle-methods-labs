@@ -1,20 +1,19 @@
 package wallFollower;
-import lejos.hardware.motor.*;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
-public class BangBangController implements UltrasonicController{
+public class PController implements UltrasonicController {
+	
 	private final int bandCenter, bandwidth;
-	private final int motorLow, motorHigh, FILTER_OUT = 20;
+	private final int motorStraight = 200, FILTER_OUT = 20;
+	private EV3LargeRegulatedMotor leftMotor, rightMotor, sensorMotor;
 	private int distance;
 	private int filterControl;
-	private EV3LargeRegulatedMotor leftMotor, rightMotor, sensorMotor;
 	
-	public BangBangController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
-			EV3LargeRegulatedMotor sensorMotor, int bandCenter, int bandwidth, int motorLow, int motorHigh) {
+	public PController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
+			EV3LargeRegulatedMotor sensorMotor, int bandCenter, int bandwidth) {
 		//Default Constructor
 		this.bandCenter = bandCenter;
 		this.bandwidth = bandwidth;
-		this.motorLow = motorLow;
-		this.motorHigh = motorHigh;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.sensorMotor = sensorMotor;
@@ -23,18 +22,21 @@ public class BangBangController implements UltrasonicController{
 		sensorMotor.setSpeed(0);
 		sensorMotor.forward();
 		
-		leftMotor.setSpeed(0);				
+		leftMotor.setSpeed(0);		
 		rightMotor.setSpeed(0);
 		leftMotor.forward();
 		rightMotor.forward();
-		
 		filterControl = 0;
 	}
 	
 	@Override
 	public void processUSData(int distance) {
+
 		// rudimentary filter - toss out invalid samples corresponding to null
 		// signal.
+		// (n.b. this was not included in the Bang-bang controller, but easily
+		// could have).
+		//
 		if (distance >= 255 && filterControl < FILTER_OUT) {
 			// bad value, do not set the distance var, however do increment the
 			// filter value
@@ -50,11 +52,11 @@ public class BangBangController implements UltrasonicController{
 			this.distance = distance;
 		}
 
-		// TODO: process a movement based on the us distance passed in (BANG-BANG style)
+		// TODO: process a movement based on the us distance passed in (P style)
 		
 		// If both motors are stopped, start moving the vehicle forward 
 		if (!leftMotor.isMoving() && !rightMotor.isMoving()) {
-			steerStraight();
+			setSpeedWithError(0);
 		}
 		
 		// calculate our offset from the bandCenter
@@ -64,30 +66,12 @@ public class BangBangController implements UltrasonicController{
 		if (!sensorMotor.isMoving()){
 			switchSensorDirection(error);
 		}
-		
-		// Keep moving forward if vehicle is within threshold value
-		if ( Math.abs(error) < this.bandwidth ) {
-			steerStraight();
-		} 
-		else if ( error < 0 ) { // We are too close to the wall
-			if ( error < -10 ) { // We are way too close
-				turnRight(); // Turn our vehicle to the right
-			} else {
-				steerRight(); // Steer our vehicle to the right
-			}
-		} else { 
-			if ( error > 100 ) {
-				// There is a gap in the wall, or it is sensing something very far away
-				// Keep going straight
-				steerStraight(); 
-			} else {
-				// We are too far from the wall, steer left
-				steerLeft();
-			}
-		}
+	
+		setSpeedWithError(error);
 		
 	}
 
+	
 	@Override
 	public int readUSDistance() {
 		return this.distance;
@@ -98,7 +82,7 @@ public class BangBangController implements UltrasonicController{
 	 */
 	public void switchSensorDirection(int error) {
 		if(sensorMotor.getLimitAngle() == 120){ // sensor is facing forward
-			if ( error < 0 ) {
+			if ( error < 0 ) { // can't be any error (need large turning radius)
 				// If the front of the vehicle is too close to the wall
 				// Keep the sensor forward until the vehicle is turned to a safe distance
 				sensorMotor.setSpeed(0);
@@ -121,42 +105,50 @@ public class BangBangController implements UltrasonicController{
 	}
 	
 	/**
-	 * Method to steer the vehicle in a straight forward direction
+	 * Method to set the proper speed of each wheel
+	 */
+	public void setSpeedWithError(int error) {
+		if ( Math.abs(error) < bandwidth ) {
+			steerStraight();
+		} else if ( error < 0 ) {
+			steerRight(error);
+		} else {
+			if ( error > 100 ) {
+				steerStraight();
+			} else {
+				steerLeft(error);
+			}
+		}
+	}
+	
+	/**
+	 * Method to steer vehicle straight 
 	 */
 	public void steerStraight() {
-		leftMotor.setSpeed(motorHigh);			
-		rightMotor.setSpeed(motorHigh);
+		leftMotor.setSpeed(motorStraight);			
+		rightMotor.setSpeed(motorStraight);
 		leftMotor.forward();
 		rightMotor.forward();
 	}
 	
 	/**
-	 * Method to turn the vehicle right for sharp turns
+	 * Method to steer vehicle to the right based on the error
 	 */
-	public void turnRight() {
-		leftMotor.setSpeed(motorHigh);			
-		rightMotor.setSpeed(0);
+	public void steerRight(int error) {
+		leftMotor.setSpeed(motorStraight);			
+		rightMotor.setSpeed( 50 / Math.abs(error) );
 		leftMotor.forward();
 		rightMotor.forward();
 	}
 	
 	/**
-	 * Method to steer the vehicle right
+	 * Method to steer vehicle to the left based on the error
 	 */
-	public void steerRight() {
-		leftMotor.setSpeed(motorHigh);			
-		rightMotor.setSpeed(motorLow);
+	public void steerLeft(int error) {
+		leftMotor.setSpeed( 100 / error );			
+		rightMotor.setSpeed( motorStraight );
 		leftMotor.forward();
 		rightMotor.forward();
 	}
-	
-    /**
-     * Method to steer the vehicle left
-     */
-	public void steerLeft() {
-		leftMotor.setSpeed(motorLow);			
-		rightMotor.setSpeed(motorHigh);
-		leftMotor.forward();
-		rightMotor.forward();
-	}
+
 }

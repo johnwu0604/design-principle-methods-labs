@@ -98,7 +98,7 @@ public class BangBangController implements UltrasonicController{
 	 */
 	public void switchSensorDirection(int error) {
 		if(sensorMotor.getLimitAngle() == 120){ // sensor is facing forward
-			if ( error < 0 ) {
+			if ( error < -5 ) {
 				// If the front of the vehicle is too close to the wall
 				// Keep the sensor forward until the vehicle is turned to a safe distance
 				sensorMotor.setSpeed(0);

@@ -70,7 +70,7 @@ public class BangBangController implements UltrasonicController{
 			steerStraight();
 		} 
 		else if ( error < 0 ) { // We are too close to the wall
-			if ( error < -10 ) { // We are way too close
+			if ( !sensorMotor.isMoving() ) { // sensor that isn't moving means we are way too close
 				turnRight(); // Turn our vehicle to the right
 			} else {
 				steerRight(); // Steer our vehicle to the right
@@ -98,7 +98,7 @@ public class BangBangController implements UltrasonicController{
 	 */
 	public void switchSensorDirection(int error) {
 		if(sensorMotor.getLimitAngle() == 120){ // sensor is facing forward
-			if ( error < 0 ) {
+			if ( error < -5 ) {
 				// If the front of the vehicle is too close to the wall
 				// Keep the sensor forward until the vehicle is turned to a safe distance
 				sensorMotor.setSpeed(0);
