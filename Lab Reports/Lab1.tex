@@ -1,0 +1,55 @@
+%%% Preamble
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{fourier}
+\usepackage[english]{babel}															
+
+%%% Maketitle metadata
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} 	% Horizontal rule
+
+\title{
+		%\vspace{-1in} 	
+		\usefont{OT1}{bch}{b}{n}
+		\normalfont \normalsize \textsc{ECSE 211 - Design Principles and Methods} \\ [25pt]
+		\horrule{0.5pt} \\[0.4cm]
+		\huge Lab 1 - Wall Follower \\
+		\horrule{2pt} \\[0.5cm]
+}
+\author{John Wu \\ Alex Lam}
+\date{\today}
+ 
+\begin{document}
+ 
+\maketitle
+ 
+\section{Objective}
+
+The objective of the lab was to create a vehicle that could navigate around around a sequence of cinderblocks making up a wall containing gaps, concave corners, and convex corners, without touching or deviating too far from it.
+ 
+\section{Method}
+ 
+Template code for wall following was modified to:
+
+\begin{itemize}
+  \item Avoid getting confused by gaps.
+  \item Turn concave corners.
+  \item Turn convex corners sharper.
+  \item Implement both P and Bang-Bang Controllers for the above requirements.
+\end{itemize}
+ 
+\section{Data Analysis}
+
+\begin{itemize}
+  \item Did the bang-bang controller keep the robot at a distance Band Centre from the wall?
+  \item Why is it expected that the robot will repeatedly oscillate from one side of the band to the other with the bang-bang and p-type controllers?
+\end{itemize}
+
+\section{Observation \& Conclusion}
+ 
+What errors did the ultrasonic experience? Were these errors filterable? Does the ultrasonic sensor produce false positives (i.e. the detection of non-existent object), false negatives (i.e. the failure to detect objects), or both
+
+\section{Further Improvements}
+
+What improvements could you make to both the physical or software designs to improve performance of the wall follower? (At least 3 are needed) Are there any other controller types that may have better outcomes than the bang-bang and p-type?
+
+\end{document}
