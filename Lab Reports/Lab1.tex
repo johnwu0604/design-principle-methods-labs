@@ -2,18 +2,18 @@
 \documentclass[paper=a4, fontsize=11pt]{scrartcl}
 \usepackage[T1]{fontenc}
 \usepackage{fourier}
-\usepackage[english]{babel}															
+\usepackage[english]{babel}                             
 
 %%% Maketitle metadata
-\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} 	% Horizontal rule
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}   % Horizontal rule
 
 \title{
-		%\vspace{-1in} 	
-		\usefont{OT1}{bch}{b}{n}
-		\normalfont \normalsize \textsc{ECSE 211 - Design Principles and Methods} \\ [25pt]
-		\horrule{0.5pt} \\[0.4cm]
-		\huge Lab 1 - Wall Follower \\
-		\horrule{2pt} \\[0.5cm]
+    %\vspace{-1in}  
+    \usefont{OT1}{bch}{b}{n}
+    \normalfont \normalsize \textsc{ECSE 211 - Design Principles and Methods} \\ [25pt]
+    \horrule{0.5pt} \\[0.4cm]
+    \huge Lab 1 - Wall Follower \\
+    \horrule{2pt} \\[0.5cm]
 }
 \author{John Wu - 260612056 \\ Alex Lam - 260746239}
 \date{\today}
@@ -35,8 +35,9 @@ Template code for wall following was modified to:
   \item Turn concave corners.
   \item Turn convex corners sharper.
   \item Implement both P and Bang-Bang Controllers for the above requirements.
+  \\[1in]
 \end{itemize}
- 
+
 \section{Data Analysis}
 
 \begin{itemize}
@@ -68,6 +69,7 @@ Template code for wall following was modified to:
   As mentioned above the sensor would generate a false negative when the wall was much too close to the wall (<5cm in general) . However, we did not experience many problems with the ultrasonic sensor in general. 
   
 \end{itemize}
+
 
 \section{Further Improvements}
 
