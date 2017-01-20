@@ -14,6 +14,12 @@ public class Odometer extends Thread {
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	// odometer update period, in ms
 	private static final long ODOMETER_PERIOD = 25;
+	
+	// circumference of our wheel given a radius of 2.1cm
+	private static final double WHEEL_CIRCUM = Math.PI*4.2;
+	
+	// track value of our vehicle
+	private static final double TRACK = 17;
 
 	// lock object for mutual exclusion
 	private Object lock;
@@ -40,12 +46,25 @@ public class Odometer extends Thread {
 			updateStart = System.currentTimeMillis();
 			//TODO put (some of) your odometer code here
 			
-			// 1. Retrieve latest angle values
-			// 2. Calculate angle change compared to last angle (update angle afterward)
-			// 3. Use angle change to calculate displacement of each wheel
-			// 4. Calculate angle and displacement
-			// 5. Use values to update odometer
+			// Get current tachometer values
+			currentLeftMotorTachoCount = leftMotor.getTachoCount();
+			currentRightMotorTachoCount = rightMotor.getTachoCount();
 			
+			// Compare it with the previous value to get the change
+			int leftDeltaTacho = currentLeftMotorTachoCount - prevLeftMotorTachoCount;
+			int rightDeltaTacho = currentRightMotorTachoCount - prevRightMotorTachoCount;
+			
+			// Use our change in rotation values to calculate displacement of each wheel
+			double leftMotorDisplacement = WHEEL_CIRCUM*leftDeltaTacho/360;
+			double rightMotorDisplacement = WHEEL_CIRCUM*rightDeltaTacho/360;
+			
+			// angle at which our vehicle changed
+			double thetaChange = ( leftMotorDisplacement-rightMotorDisplacement )/TRACK;
+			// change in distance of our vehicle
+			double displacement = ( leftMotorDisplacement + rightMotorDisplacement )/2;
+			
+			prevLeftMotorTachoCount = currentLeftMotorTachoCount;
+			prevRightMotorTachoCount = currentRightMotorTachoCount;
 			
 
 			synchronized (lock) {
@@ -55,7 +74,10 @@ public class Odometer extends Thread {
 				 * Do not perform complex math
 				 * 
 				 */
-				theta = -0.7376; //TODO replace example value
+				theta += thetaChange;
+				x += displacement*Math.sin(theta);
+				y += displacement*Math.cos(theta);
+				
 			}
 
 			// this ensures that the odometer only runs once every period
@@ -81,7 +103,7 @@ public class Odometer extends Thread {
 			if (update[1])
 				position[1] = y;
 			if (update[2])
-				position[2] = theta;
+				position[2] = ( theta * 360 / ( 2 * Math.PI ) ) % 360;
 		}
 	}
 
@@ -147,34 +169,34 @@ public class Odometer extends Thread {
 	}
 
 	/**
-	 * @return the leftMotorTachoCount
+	 * @return the currentLeftMotorTachoCount
 	 */
-	public int getLeftMotorTachoCount() {
-		return leftMotorTachoCount;
+	public int getCurrentLeftMotorTachoCount() {
+		return currentLeftMotorTachoCount;
 	}
 
 	/**
-	 * @param leftMotorTachoCount the leftMotorTachoCount to set
+	 * @param currentLeftMotorTachoCount the currentLeftMotorTachoCount to set
 	 */
-	public void setLeftMotorTachoCount(int leftMotorTachoCount) {
+	public void setCurrentLeftMotorTachoCount(int currentLeftMotorTachoCount) {
 		synchronized (lock) {
-			this.leftMotorTachoCount = leftMotorTachoCount;	
+			this.currentLeftMotorTachoCount = currentLeftMotorTachoCount;	
 		}
 	}
 
 	/**
-	 * @return the rightMotorTachoCount
+	 * @return the currentRightMotorTachoCount
 	 */
-	public int getRightMotorTachoCount() {
-		return rightMotorTachoCount;
+	public int getCurrentRightMotorTachoCount() {
+		return currentRightMotorTachoCount;
 	}
 
 	/**
-	 * @param rightMotorTachoCount the rightMotorTachoCount to set
+	 * @param currentRightMotorTachoCount the currentRightMotorTachoCount to set
 	 */
-	public void setRightMotorTachoCount(int rightMotorTachoCount) {
+	public void setCurrentRightMotorTachoCount(int currentRightMotorTachoCount) {
 		synchronized (lock) {
-			this.rightMotorTachoCount = rightMotorTachoCount;	
+			this.currentRightMotorTachoCount = currentRightMotorTachoCount;	
 		}
 	}
 }
