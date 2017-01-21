@@ -3,13 +3,17 @@
  */
 package ev3Odometer;
 
+import lejos.hardware.sensor.EV3ColorSensor;
+
 public class OdometryCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 10;
 	private Odometer odometer;
+	private EV3ColorSensor lightSensor;
 
 	// constructor
-	public OdometryCorrection(Odometer odometer) {
+	public OdometryCorrection(Odometer odometer, EV3ColorSensor lightSensor) {
 		this.odometer = odometer;
+		this.lightSensor = lightSensor;
 	}
 
 	// run method (required for Thread)
@@ -18,8 +22,11 @@ public class OdometryCorrection extends Thread {
 
 		while (true) {
 			correctionStart = System.currentTimeMillis();
-
+			
 			// put your correction code here
+			
+			// correct our theta value
+			correctTheta();
 
 			// this ensure the odometry correction occurs only once every period
 			correctionEnd = System.currentTimeMillis();
@@ -35,4 +42,40 @@ public class OdometryCorrection extends Thread {
 			}
 		}
 	}
+	
+	/**
+	 * A method to correct our theta value
+	 */
+	private void correctTheta() {
+		//if our robot is not rotating then it must be moving forward at a constant angle
+		if ( !isRobotRotating() ) {
+			// correct it to one of the 4 possible angles for when robot is not rotating, 
+			if ( odometer.getTheta() > -10 && odometer.getTheta() < 10 ) {
+				odometer.setTheta(0);
+			} 
+			if ( odometer.getTheta() > 80 && odometer.getTheta() < 100 ) {
+				odometer.setTheta(90);
+			} 
+			if ( odometer.getTheta() > 170 && odometer.getTheta() < 190 ) {
+				odometer.setTheta(180);
+			}
+			if ( odometer.getTheta() > 260 && odometer.getTheta() < 280 ) {
+				odometer.setTheta(270);
+			}
+		}
+		
+	}
+	
+	/**
+	 * A method to determine whether robot is rotating
+	 * @return
+	 */
+	private boolean isRobotRotating() {
+		// If absolute changes for both x and y are very small, robot must be rotating
+		if ( odometer.getX() < Math.abs(0.1) && odometer.getY() < Math.abs(0.1) ) {
+			return true;
+		}
+		return false;
+	}
+	
 }

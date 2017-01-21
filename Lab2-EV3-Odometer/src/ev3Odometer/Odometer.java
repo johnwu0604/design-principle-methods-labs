@@ -8,7 +8,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Odometer extends Thread {
 	// robot position
-	private double x, y, theta;
+	private double x, y, theta, track;
 	private int currentLeftMotorTachoCount, currentRightMotorTachoCount,
 				prevLeftMotorTachoCount, prevRightMotorTachoCount;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
@@ -17,17 +17,15 @@ public class Odometer extends Thread {
 	
 	// circumference of our wheel given a radius of 2.1cm
 	private static final double WHEEL_CIRCUM = Math.PI*4.2;
-	
-	// track value of our vehicle
-	private static final double TRACK = 17;
 
 	// lock object for mutual exclusion
 	private Object lock;
 
 	// default constructor
-	public Odometer(EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor) {
+	public Odometer(EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor, double track) {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
+		this.track = track;
 		this.x = 0.0;
 		this.y = 0.0;
 		this.theta = 0.0;
@@ -59,7 +57,7 @@ public class Odometer extends Thread {
 			double rightMotorDisplacement = WHEEL_CIRCUM*rightDeltaTacho/360;
 			
 			// angle at which our vehicle changed
-			double thetaChange = ( leftMotorDisplacement-rightMotorDisplacement )/TRACK;
+			double thetaChange = ( leftMotorDisplacement - rightMotorDisplacement )/track;
 			// change in distance of our vehicle
 			double displacement = ( leftMotorDisplacement + rightMotorDisplacement )/2;
 			
