@@ -7,14 +7,20 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class SquareDriver {
 	private static final int FORWARD_SPEED = 250;
-	private static final int ROTATE_SPEED = 150;
+	private static final int ROTATE_SPEED = 100;
+	private static final double SQUARE_LENGTH = 30.48;
+	private static final double PATH= 2*SQUARE_LENGTH;
+	//left radius too big turns too much, final rotated counterclockwise from initial
+	public static final double LEFT_WHEEL_RADIUS = 2.090;
+	public static final double RIGHT_WHEEL_RADIUS = 2.093;
+	public static final double TRACK = 15.8;
 
-	public static void drive(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
-			double leftRadius, double rightRadius, double width) {
+	public static void drive(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
+		
 		// reset the motors
 		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
 			motor.stop();
-			motor.setAcceleration(3000);
+			motor.setAcceleration(1500);
 		}
 
 		// wait 5 seconds
@@ -30,15 +36,15 @@ public class SquareDriver {
 			leftMotor.setSpeed(FORWARD_SPEED);
 			rightMotor.setSpeed(FORWARD_SPEED);
 
-			leftMotor.rotate(convertDistance(leftRadius, 91.44), true);
-			rightMotor.rotate(convertDistance(rightRadius, 91.44), false);
+			leftMotor.rotate(convertDistance(LEFT_WHEEL_RADIUS, PATH), true);
+			rightMotor.rotate(convertDistance(RIGHT_WHEEL_RADIUS, PATH), false);
 
 			// turn 90 degrees clockwise
 			leftMotor.setSpeed(ROTATE_SPEED);
 			rightMotor.setSpeed(ROTATE_SPEED);
 
-			leftMotor.rotate(convertAngle(leftRadius, width, 90.0), true);
-			rightMotor.rotate(-convertAngle(rightRadius, width, 90.0), false);
+			leftMotor.rotate(convertAngle(LEFT_WHEEL_RADIUS, TRACK, 90.0), true);
+			rightMotor.rotate(-convertAngle(RIGHT_WHEEL_RADIUS, TRACK, 90.0), false);
 		}
 	}
 
@@ -46,7 +52,7 @@ public class SquareDriver {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
-	private static int convertAngle(double radius, double width, double angle) {
-		return convertDistance(radius, Math.PI * width * angle / 360.0);
+	private static int convertAngle(double radius, double TRACK, double angle) {
+		return convertDistance(radius, Math.PI * TRACK * angle / 360.0);
 	}
 }
