@@ -3,12 +3,15 @@
  */
 package ev3Odometer;
 
+import lejos.hardware.Sound;
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.robotics.SampleProvider;
 
 public class OdometryCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 10;
 	private Odometer odometer;
 	private EV3ColorSensor lightSensor;
+	private SampleProvider csColor;
 
 	// constructor
 	public OdometryCorrection(Odometer odometer, EV3ColorSensor lightSensor) {
@@ -19,14 +22,17 @@ public class OdometryCorrection extends Thread {
 	// run method (required for Thread)
 	public void run() {
 		long correctionStart, correctionEnd;
+		
 
 		while (true) {
 			correctionStart = System.currentTimeMillis();
 			
 			// put your correction code here
 			
-			// correct our theta value
+			// correct our values
 			correctTheta();
+			correctXY();
+			
 
 			// this ensure the odometry correction occurs only once every period
 			correctionEnd = System.currentTimeMillis();
@@ -65,6 +71,14 @@ public class OdometryCorrection extends Thread {
 		}
 		
 	}
+	
+	private void correctXY() {
+		switch(lightSensor.getColorID()) {
+		case(13): Sound.beep();
+		break;
+		}
+	}
+	
 	
 	/**
 	 * A method to determine whether robot is rotating
