@@ -21,10 +21,10 @@ public class Lab2 {
 	// Light sensor connected to input S1
 	private static final EV3ColorSensor lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S1")); 
 
-	// Constants
-	public static final double WHEEL_RADIUS = 2.1;
-	public static final double TRACK = 16.75;
-
+	// Constants, keep all variables that affect the path of the car localized to the 
+	// SqaureDriver class
+	private static final double TRACK = SquareDriver.TRACK;
+	
 	public static void main(String[] args) {
 		int buttonChoice;
 
@@ -66,12 +66,12 @@ public class Lab2 {
 			
 			odometer.start();
 			odometryDisplay.start();
-			// odometryCorrection.start();
+			odometryCorrection.start();
 
 			// spawn a new Thread to avoid SquareDriver.drive() from blocking
 			(new Thread() {
 				public void run() {
-					SquareDriver.drive(leftMotor, rightMotor, WHEEL_RADIUS, WHEEL_RADIUS, TRACK);
+					SquareDriver.drive(leftMotor, rightMotor);
 				}
 			}).start();
 		}

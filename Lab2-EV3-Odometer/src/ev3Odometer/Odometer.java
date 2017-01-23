@@ -3,10 +3,10 @@
  */
 
 package ev3Odometer;
-
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Odometer extends Thread {
+	//ALL DISTANCE VALUES ARE IN CM,THETA IN RAD-> CONVERT TO DEGREES
 	// robot position
 	private double x, y, theta, track;
 	private int currentLeftMotorTachoCount, currentRightMotorTachoCount,
@@ -129,7 +129,7 @@ public class Odometer extends Thread {
 		double result;
 
 		synchronized (lock) {
-			result = theta;
+			result = theta*180/Math.PI;
 		}
 
 		return result;
