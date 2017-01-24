@@ -9,7 +9,7 @@ public class SquareDriver {
 	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 100;
 	private static final double SQUARE_LENGTH = 30.48;
-	private static final double PATH= 2*SQUARE_LENGTH;
+	private static final double PATH= 3*SQUARE_LENGTH;
 	//left radius too big turns too much, final rotated counterclockwise from initial
 	public static final double LEFT_WHEEL_RADIUS = 2.090;
 	public static final double RIGHT_WHEEL_RADIUS = 2.093;

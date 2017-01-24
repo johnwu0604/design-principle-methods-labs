@@ -4,3 +4,75 @@
 2017-01-13 16:09:11,637 [Worker-1] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
 2017-01-13 16:51:30,437 [Worker-0] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
 2017-01-16 11:43:10,782 [Worker-3] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
+2017-01-23 10:44:30,324 [Worker-2] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
+2017-01-23 11:24:57,584 [Worker-1] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2017-01-23 15:28:24,299 [Thread-7] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 15:28:24,392 [Thread-10] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 15:28:24,486 [Worker-3] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2017-01-23 15:53:37,962 [Worker-0] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2017-01-23 15:53:39,877 [Thread-10] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 15:53:40,036 [Thread-11] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 16:25:48,927 [Worker-0] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2017-01-23 16:25:50,956 [Thread-10] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 16:25:51,106 [Thread-11] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 17:58:54,033 [Worker-2] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2017-01-23 17:58:55,739 [Thread-10] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 17:58:55,856 [Thread-11] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 18:17:36,612 [Worker-3] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2017-01-23 18:17:38,517 [Thread-10] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 18:17:38,658 [Thread-11] ERROR org.eclipse.jgit.util.FS - 
+
+Agreeing to the Xcode/iOS license requires admin privileges, please re-run as root via sudo.
+
+
+
+2017-01-23 18:34:36,593 [Worker-0] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2017-01-23 18:34:39,703 [Thread-10] ERROR org.eclipse.jgit.util.FS - 2017-01-23 18:34:39.084 xcodebuild[28601:2835570] [MT] PluginLoading: Required plug-in compatibility UUID E0A62D1F-3C18-4D74-BFE5-A4167D643966 for plug-in at path '~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Alcatraz.xcplugin' not present in DVTPlugInCompatibilityUUIDs
+
+2017-01-23 18:41:43,345 [Worker-2] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2017-01-23 18:52:22,044 [Worker-1] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.

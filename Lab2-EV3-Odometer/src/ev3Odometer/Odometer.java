@@ -101,7 +101,11 @@ public class Odometer extends Thread {
 			if (update[1])
 				position[1] = y;
 			if (update[2])
-				position[2] = ( theta * 360 / ( 2 * Math.PI ) ) % 360;
+				if(theta>=0) {
+	  				position[2] = ( theta * 360 / ( 2 * Math.PI ) ) % 360;
+	 			} else {
+	 			    position[2] = (( theta * 360 / ( 2 * Math.PI ) ) % 360)+360;
+	 			}
 		}
 	}
 

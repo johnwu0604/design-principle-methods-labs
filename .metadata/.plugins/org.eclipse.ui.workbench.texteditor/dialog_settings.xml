@@ -2,12 +2,19 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="BangBang" key="selection"/>
+		<item value="xnow" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="xnow"/>
+			<item value="tprev"/>
+			<item value="tnow"/>
+			<item value="deltaT"/>
+			<item value="deltaX"/>
+			<item value="deltaY"/>
+			<item value="TRACK"/>
 			<item value="bangbang"/>
 		</list>
 		<list key="replacehistory">
@@ -17,7 +24,7 @@
 		<item value="290" key="DIALOG_WIDTH"/>
 		<item value="1|.SF NS Text|11.0|0|COCOA|1|.SFNSText-Regular" key="DIALOG_FONT_NAME"/>
 		<item value="409" key="DIALOG_HEIGHT"/>
-		<item value="911" key="DIALOG_X_ORIGIN"/>
-		<item value="148" key="DIALOG_Y_ORIGIN"/>
+		<item value="931" key="DIALOG_X_ORIGIN"/>
+		<item value="107" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>
