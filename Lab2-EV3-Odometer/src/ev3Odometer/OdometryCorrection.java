@@ -19,7 +19,7 @@ public class OdometryCorrection extends Thread {
 	private double squareLength= 30.48;
 	
 	// stores the length of the vehicle to the actual sensor
-	private double wheelToSensorLength = 2;
+	private double wheelToSensorLength = 3.5;
 	
 	//stores the direction the vehicle is traveling (north,south,east,west,rotating)
 	private String direction;
@@ -31,6 +31,9 @@ public class OdometryCorrection extends Thread {
 	//sets to zero initially but updates as sensor reads line to determine location
 	private double startingPointX = 0.0;
 	private double startingPointY = 0.0;
+	
+	private double currentConstantX = 0.0;
+	private double currentConstantY = 0.0;
 		
 	// constructor
 	public OdometryCorrection(Odometer odometer, EV3ColorSensor lightSensor) {
@@ -159,8 +162,6 @@ public class OdometryCorrection extends Thread {
 	 * A method sensor corrections while vehicle is moving north
 	 */
 	private void sensorCorrectionNorth() {
-		// x should remain constant while y changes depending on the line
-		xnow = 0;
 		if (lastLine == 0) {
 			startingPointY = squareLength-ynow-wheelToSensorLength;
 		} else if (lastLine == 1) {
@@ -176,9 +177,8 @@ public class OdometryCorrection extends Thread {
 	 * A method sensor corrections while vehicle is moving east
 	 */
 	private void sensorCorrectionEast() {
-		// y should remain constant while x changes depending on the line
-		ynow = 3*squareLength;
 		if (lastLine == 0) {
+			currentConstantY = ynow;
 			startingPointX = squareLength-xnow-wheelToSensorLength;
 		} else if (lastLine == 1) {
 			xnow = 2*squareLength - startingPointX - wheelToSensorLength; 
@@ -193,9 +193,8 @@ public class OdometryCorrection extends Thread {
 	 * A method sensor corrections while vehicle is moving south
 	 */
 	private void sensorCorrectionSouth() {
-		// x should remain constant while y changes depending on the line
-		xnow = 3*squareLength;
 		if (lastLine == 0) {
+			currentConstantX = xnow;
 			ynow = 3*squareLength - startingPointY- wheelToSensorLength;
 		} else if (lastLine == 1) {
 			ynow = 2*squareLength - startingPointY - wheelToSensorLength; 
@@ -210,9 +209,8 @@ public class OdometryCorrection extends Thread {
 	 * A method sensor corrections while vehicle is moving west
 	 */
 	private void sensorCorrectionWest() {
-		// y should remain constant while x changes depending on the line
-		ynow = 0;
 		if (lastLine == 0) {
+			currentConstantY = ynow;
 			xnow = 3*squareLength - startingPointX - wheelToSensorLength; 
 		} else if (lastLine == 1) {
 			xnow = 2*squareLength - startingPointX - wheelToSensorLength; 
