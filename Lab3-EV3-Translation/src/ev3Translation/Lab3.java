@@ -54,7 +54,7 @@ public class Lab3 {
 				&& buttonChoice != Button.ID_RIGHT);
 
 		if (buttonChoice == Button.ID_LEFT) {
-			NavigatorUS navigatorUS = new NavigatorUS(leftMotor, rightMotor, odometer);
+			NavigatorUS navigatorUS = new NavigatorUS(leftMotor, rightMotor, sensorMotor, odometer);
 			usPoller = new UltrasonicPoller(usDistance, usData, navigatorUS);
 			//start our odometer
 			odometer.start();

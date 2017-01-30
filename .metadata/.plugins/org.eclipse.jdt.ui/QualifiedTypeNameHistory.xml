@@ -3,4 +3,8 @@
 <fullyQualifiedTypeName name="java.lang.Math"/>
 <fullyQualifiedTypeName name="lejos.hardware.sensor.EV3ColorSensor"/>
 <fullyQualifiedTypeName name="java.awt.Point"/>
+<fullyQualifiedTypeName name="lejos.hardware.port.Port"/>
+<fullyQualifiedTypeName name="lejos.hardware.sensor.SensorModes"/>
+<fullyQualifiedTypeName name="lejos.robotics.SampleProvider"/>
+<fullyQualifiedTypeName name="lejos.hardware.sensor.EV3UltrasonicSensor"/>
 </qualifiedTypeNameHistroy>

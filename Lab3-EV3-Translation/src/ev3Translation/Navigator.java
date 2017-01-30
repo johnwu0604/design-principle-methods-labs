@@ -3,15 +3,15 @@ package ev3Translation;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Navigator extends Thread {
-	
+	 
+	// vehicle variables
 	private static Odometer odometer;
 	private static EV3LargeRegulatedMotor leftMotor, rightMotor;
-	
 	private final double RADIUS, TRACK;
 	
-	private static final int FORWARD_SPEED = 250;
-	private static final int ROTATE_SPEED = 100;
-	private static final double SQUARE_LENGTH = 30.48;
+	// navigation variables
+	private static final int FORWARD_SPEED = 250, ROTATE_SPEED = 100;
+	private static boolean isNavigating = true;
 
 	public Navigator(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, Odometer odometer) {
 		this.leftMotor = leftMotor;
@@ -21,6 +21,9 @@ public class Navigator extends Thread {
 		this.TRACK = Lab3.TRACK;
 	}
 	
+	/**
+	 * Our main run method
+	 */
 	public void run() {
 		//reset motors
 		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
@@ -34,10 +37,25 @@ public class Navigator extends Thread {
 		travelTo(60, 0);
 	}
 	
+	/**
+	 * Determine how much the motor must rotate for vehicle to reach a certain distance
+	 * 
+	 * @param radius
+	 * @param distance
+	 * @return
+	 */
 	private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
+	/**
+	 * Determine the angle our motors need to rotate in order for vehicle to turn a certain angle 
+	 * 
+	 * @param radius
+	 * @param TRACK
+	 * @param angle
+	 * @return
+	 */
 	private static int convertAngle(double radius, double TRACK, double angle) {
 		return convertDistance(radius, Math.PI * TRACK * angle / 360.0);
 	}
@@ -49,6 +67,7 @@ public class Navigator extends Thread {
 	 * @param y Y-Coordinate
 	 */
 	private void travelTo(double x, double y) {
+		isNavigating = true;
 		double deltaX = x - odometer.getX();
 		double deltaY = y - odometer.getY();
 		
@@ -69,6 +88,7 @@ public class Navigator extends Thread {
 
 		leftMotor.stop(true);
 		rightMotor.stop(true);
+		isNavigating = false;
 	}
 	
 	/**
