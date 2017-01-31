@@ -102,8 +102,8 @@ public class Navigator extends Thread {
 		rightMotor.setSpeed(ROTATE_SPEED);
 		
 		if(theta < 0) { // if angle is negative, turn to the left
-			leftMotor.rotate(-convertAngle(RADIUS, TRACK, -(theta*180)/Math.PI), true);
-			rightMotor.rotate(convertAngle(RADIUS, TRACK, -(theta*180)/Math.PI), false);
+			leftMotor.rotate(-convertAngle(RADIUS, TRACK, (theta*180)/Math.PI), true);
+			rightMotor.rotate(convertAngle(RADIUS, TRACK, (theta*180)/Math.PI), false);
 		} 
 		else { // angle is positive, turn to the right
 			leftMotor.rotate(convertAngle(RADIUS, TRACK, (theta*180)/Math.PI), true);
