@@ -11,17 +11,22 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 	
 	// navigation variables
 	private static final int FORWARD_SPEED = 250, ROTATE_SPEED = 100;
+	private static final int MOTOR_ACCELERATION=400;
 	private static boolean isNavigating = true;
 	
+	 
 	// variables to store sensor data
 	private int distance, filterControl;
 	
 	// wall follower variables
-	private static final int motorLow = 50, motorHigh = 200, bandCenter = 12, bandwidth = 3, FILTER_OUT = 20;
+	private static final int motorLow = 100, motorHigh = 200, bandCenter = 12, bandwidth = 3, FILTER_OUT = 20;
 
 	// obstacle avoidance variables
 	private double initialAngleAtBlock;
 	private static boolean hasBlockPassed = false;
+	
+	double destinationX;
+	double destinationY;
 
 	public NavigatorUS(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,  EV3LargeRegulatedMotor sensorMotor,
 			Odometer odometer) {
@@ -59,9 +64,9 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 				//reset motors
 				for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
 					motor.stop();
-					motor.setAcceleration(200);
+					motor.setAcceleration(MOTOR_ACCELERATION);
 				}
-				travelTo(60,0);
+				travelTo(destinationX,destinationY);
 				return;
 			}
 			// otherwise execute our wall follow logic
@@ -86,7 +91,7 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 		//reset motors
 		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
 			motor.stop();
-			motor.setAcceleration(200);
+			motor.setAcceleration(MOTOR_ACCELERATION);
 		}
 		// travel to coordinates
 		travelTo(0, 60);
@@ -123,6 +128,8 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 	 * @param y Y-Coordinate
 	 */
 	private void travelTo(double x, double y) {
+		this.destinationX=x;
+		this.destinationY=y;
 		isNavigating = true;
 		double deltaX = x - odometer.getX();
 		double deltaY = y - odometer.getY();
@@ -156,11 +163,12 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 		leftMotor.setSpeed(ROTATE_SPEED);
 		rightMotor.setSpeed(ROTATE_SPEED);
 		
-		if(theta < 0) { // if angle is negative, turn to the left
-			leftMotor.rotate(-convertAngle(RADIUS, TRACK, -(theta*180)/Math.PI), true);
-			rightMotor.rotate(convertAngle(RADIUS, TRACK, -(theta*180)/Math.PI), false);
+				
+		if(theta < 0) { // if angle is negative, turn counter clockwise
+			leftMotor.rotate(-convertAngle(RADIUS, TRACK, (theta*180)/Math.PI), true);
+			rightMotor.rotate(convertAngle(RADIUS, TRACK, (theta*180)/Math.PI), false);
 		} 
-		else { // angle is positive, turn to the right
+		else { // angle is positive, turn clockwise
 			leftMotor.rotate(convertAngle(RADIUS, TRACK, (theta*180)/Math.PI), true);
 			rightMotor.rotate(-convertAngle(RADIUS, TRACK, (theta*180)/Math.PI), false);
 		}
