@@ -8,20 +8,23 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 	private static Odometer odometer;
 	private static EV3LargeRegulatedMotor leftMotor, rightMotor, sensorMotor;
 	private final double RADIUS, TRACK;
+	private final int MOTOR_ACCELERATION = 200;
 	
 	// navigation variables
 	private static final int FORWARD_SPEED = 250, ROTATE_SPEED = 100;
 	private static boolean isNavigating = true;
+	private static double navigatingX, navigatingY;
 	
 	// variables to store sensor data
 	private int distance, filterControl;
 	
 	// wall follower variables
-	private static final int motorLow = 50, motorHigh = 200, bandCenter = 12, bandwidth = 3, FILTER_OUT = 20;
+	private static final int motorLow = 50, motorHigh = 200, bandCenter = 10, bandwidth = 3, FILTER_OUT = 20;
 
 	// obstacle avoidance variables
 	private double initialAngleAtBlock;
 	private static boolean hasBlockPassed = false;
+	private static boolean isPassingBlock = false;
 
 	public NavigatorUS(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,  EV3LargeRegulatedMotor sensorMotor,
 			Odometer odometer) {
@@ -59,7 +62,10 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 				//reset motors
 				for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
 					motor.stop();
-					motor.setAcceleration(200);
+					motor.setAcceleration(MOTOR_ACCELERATION);
+				}
+				if ( navigatingX == 0 && navigatingY == 60) {
+					travelTo(0,60);
 				}
 				travelTo(60,0);
 				return;
@@ -86,11 +92,13 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 		//reset motors
 		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
 			motor.stop();
-			motor.setAcceleration(200);
+			motor.setAcceleration(MOTOR_ACCELERATION);
 		}
 		// travel to coordinates
 		travelTo(0, 60);
-		travelTo(60, 0);
+		if (!isPassingBlock) {
+			travelTo(60, 0);
+		}
 	}
 	
 	/**
@@ -124,6 +132,8 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 	 */
 	private void travelTo(double x, double y) {
 		isNavigating = true;
+		navigatingX = x;
+		navigatingY = y;
 		double deltaX = x - odometer.getX();
 		double deltaY = y - odometer.getY();
 		
@@ -235,9 +245,10 @@ public class NavigatorUS extends Thread implements UltrasonicController {
 	 */
 	private void prepareForWallFollower() {
 		isNavigating = false;
+		isPassingBlock = true;
 		turnTo(Math.PI/2); // turn our angle 90 degrees
 		sensorMotor.setSpeed(100);					
-		sensorMotor.rotate(-110); // turn our sensor toward the wall
+		sensorMotor.rotate(-100); // turn our sensor toward the wall
 	}
 	
 	/**

@@ -8,6 +8,7 @@ public class Navigator extends Thread {
 	private static Odometer odometer;
 	private static EV3LargeRegulatedMotor leftMotor, rightMotor;
 	private final double RADIUS, TRACK;
+	private final int MOTOR_ACCELERATION = 200;
 	
 	// navigation variables
 	private static final int FORWARD_SPEED = 250, ROTATE_SPEED = 100;
@@ -28,7 +29,7 @@ public class Navigator extends Thread {
 		//reset motors
 		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
 			motor.stop();
-			motor.setAcceleration(200);
+			motor.setAcceleration(MOTOR_ACCELERATION);
 		}
 		// travel to coordinates
 		travelTo(60, 30);
