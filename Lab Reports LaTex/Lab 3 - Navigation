@@ -1,0 +1,113 @@
+%%% Preamble
+\documentclass[paper=a4, fontsize=10.3pt]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{fourier}
+\usepackage[english]{babel}                             
+
+%%% Maketitle metadata
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}   % Horizontal rule
+
+\title{
+    %\vspace{-1in}  
+    \usefont{OT1}{bch}{b}{n}
+    \normalfont \normalsize \textsc{ECSE 211 - Design Principles and Methods} \\ [25pt]
+    \horrule{0.5pt} \\[0.4cm]
+    \huge Lab 3 - Navigation \\
+    \horrule{2pt} \\[0.5cm]
+}
+\author{John Wu - 260612056 \\ Alex Lam - 260746239}
+\date{\today}
+ 
+\begin{document}
+ 
+\maketitle
+
+\pagebreak
+
+\section{Data} 
+\begin{center}
+ \begin{tabular}{||c c c c ||} 
+ \hline
+ Trial & Measured $(x, y)$ & Odometer $(x, y)$ & Difference $(x, y)$ \\ [0.5ex] 
+ \hline\hline
+ 1 & (59, 1) & (59.56, -0.43) & (-0.56, 1.43) \\
+ \hline
+ 2 & (59, -0.5) & (59.33, -0.58) & (-0.33, -0.08) \\
+ \hline
+ 3 & (59, 0) & (59.56, -0.4) & (-0.56, -0.4) \\
+ \hline
+ 4 & (60, -0.5) & (59.41, -0.49) & (0.59, -0.01) \\
+ \hline
+ 5 & (60, 0.5) & (59.46, -0.48) & (0.54, 0.98) \\ 
+ \hline
+ 6 & (60.2, 0.2) & (59.59, -0.43) & (0.43, 0.63) \\ 
+ \hline
+ 7 & (59.98, 0) & (59.46, -0.47) & (0.52, -0.47) \\
+ \hline
+ 8 & (60, 0) & (59.50, -0.49) & (0.5, -0.49) \\
+ \hline
+ 9 & (60, -0.1) & (59.39, -0.54) & (0.61, 0.44) \\ 
+ \hline
+ 10 & (60.1, 0.3) & (59.37, -0.53) & (0.73, 0.83) \\ 
+ \hline
+ \hline
+Mean in X: 0.247 & Mean in Y: 0.286& STD in X: 0.101197 & STD in Y: 0.639862\\
+ \hline
+\end{tabular}
+\end{center}
+
+\section{Data Analysis}
+
+\begin{itemize}
+
+  \item \textbf{Show your work for the computation of mean and standard deviation of the errors from the first part of the lab.}
+  
+  Mean:\\  \\
+  $\mu$ =  $\frac{1}{N}\sum_{i=1}^{N} \Delta X$ ;\\ \\
+  Where: \\
+  N: number of trials\\
+  X: the variable of interest (either X or Y )\\
+  
+  Standard deviation: \\ \\
+  $\sigma$ =  $\sqrt{\frac{1}{N}\sum_{i=1}^{N} (x_i-\mu)}$ ;\\ \\
+  Where:\\
+  N: number of trials\\
+  $x_i$: each member of the population\\
+  $\mu$: the mean
+  
+  \newpage
+
+  \item \textbf{ Are the errors present as a result of the odometer or the navigator? Give reasons to back up your claim.} 
+  
+We believe that the errors present are a result of the odometer and not the navigator because, as a general rule, the robot would end up at the coordinates set by the navigator. This indicates that our robot could indeed navigate to specified coordinates on the board which suggests that the errors between the odometer values and the actual position of our robot were a result of the odometer. In addition, in lab 2, we noticed a significant decrease in the error when odometer correction was implemented with the light sensor. However, in this lab, this feature was removed which led to higher error.  
+\end{itemize}
+\section{Observation \& Conclusion}
+
+\begin{itemize}
+
+  \item \textbf{In three to four sentences, explain the operation of your controller(s) for navigation. How accurately does it move the robot to its destination? How quickly does it settle (stop oscillating) on its destination? You do not need to provide a quantitative analysis.}
+  
+Our navigator had three main methods for navigation: travelTo, turnTo, and isNavigating. Our travelTo method would start the navigation instructions by calculating the minimum angle to its destination and calling the turnTo method with that angle. Once turned to the proper angle, the vehicle would drive straight towards its destination. If at any time the sensor retrieves data of an obstacle while our isNavigating method returns true, we would immediately stop our navigation and execute our wall follower logic (from Lab 1) until we passed the obstacle. Once completed, we would continue to our original destination. In this way our robot was very accurate and settled quickly on its destination. 
+ 
+ 
+  \item \textbf{How would increasing the speed of the robot affect the accuracy of your navigation? What is the main source of error in navigation (and odometry)?}
+  
+Increasing the speed would not have impacted the accuracy of the navigation or odometry. Assuming a low acceleration, the speed would indeed be naturally capped as, if the acceleration is low, the robot would have to accelerate for a longer distance in order to reach a higher speed. However, since the distance to be traveled is fixed, the speed of the robot is capped. Increasing the speed beyond the maximum set by the acceleration would thus not have an impact on the accuracy of the controllers. In addition, we noticed that with a very low acceleration the software seems to take into account the extra distance needed to come to a stop and causes the robot to start decelerating before reaching it's destination. This is also a reason why increasing the speed does not have an impact on the accuracy. As, with a low enough acceleration, the robot would start decelerating at an earlier point in order to reach its destination with an almost zero velocity. An increased velocity would thus simply mean that the robot would start decelerating earlier but would not contribute to any extra error.\\
+The main source of error in both navigation and odometry is the slip of the wheels. As there are multiple points to travel between, the effect of the wheel slip is increased in comparison to last lab as the robot now has to decelerate and accelerate more often, which increases the error due to the slipping of the wheels. An increase in the slipping of the wheels also causes a decrease in effective motor rotation which renders the navigation less effective. 
+
+  
+\end{itemize}
+
+\section{Further Improvements}
+
+\begin{itemize}
+
+  \item \textbf{What steps can be taken to reduce the errors in navigation and odometry? In four (4) to six (6) sentences, Identify at least one hardware and one software solution, and provide an explanation as to why they would work.}
+  
+In order to decrease error we could find a way to decrease the slip in the wheels as well as find find a way to correct our odometer values. A software solution would be to decrease the acceleration of the motors as this would decrease the slipping of the wheels that rendered the odometer less accurate. Decreasing acceleration would also reduce the rocking effect the robot experiences when it comes to a stop with too high of an acceleration. A hardware improvement that would lead to a decrease in the error would be to add a light sensor in order to sense the lines of the board and have a reference with which we could correct our odometer values. 
+    
+  
+\end{itemize}
+
+
+\end{document}
