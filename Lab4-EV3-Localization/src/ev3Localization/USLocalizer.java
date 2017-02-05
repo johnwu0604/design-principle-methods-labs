@@ -4,7 +4,7 @@ import lejos.robotics.SampleProvider;
 
 public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
-	public static int ROTATION_SPEED = 80;
+	public static int ROTATION_SPEED = 100;
 	private static final double DISTANCE_WALL = 30, NOISE_MARGIN = 3;
 
 	private Odometer odo;

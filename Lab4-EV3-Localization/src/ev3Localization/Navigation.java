@@ -13,7 +13,7 @@ package ev3Localization;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Navigation {
-	final static int FAST = 200, SLOW = 100, ACCELERATION = 4000;
+	final static int FAST = 200, SLOW = 100, ACCELERATION = 500;
 	final static double DEG_ERR = 3.0, CM_ERR = 1.0;
 	private Odometer odometer;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
@@ -70,19 +70,38 @@ public class Navigation {
 	}
 
 	/*
-	 * TravelTo function which takes as arguments the x and y position in cm Will travel to designated position, while
-	 * constantly updating it's heading
+	 * TravelTo function which takes as arguments the x and y position in cm Will travel to designated position
 	 */
 	public void travelTo(double x, double y) {
-		double minAng;
-		while (Math.abs(x - odometer.getX()) > CM_ERR || Math.abs(y - odometer.getY()) > CM_ERR) {
-			minAng = (Math.atan2(y - odometer.getY(), x - odometer.getX())) * (180.0 / Math.PI);
-			if (minAng < 0)
-				minAng += 360.0;
-			this.turnTo(minAng, false);
-			this.setSpeeds(FAST, FAST);
-		}
-		this.setSpeeds(0, 0);
+	
+		double deltaX = x - odometer.getX();
+		double deltaY = y - odometer.getY();
+		
+		// turn to the minimum angle
+		turnTo(odometer.getAng(), true);
+		
+		// calculate the distance to next point
+		double distance  = Math.hypot(deltaX, deltaY);
+		
+		// move to the next point
+		leftMotor.setSpeed(FAST);
+		rightMotor.setSpeed(FAST);
+		leftMotor.rotate(convertDistance(odometer.getWheelRadius(),distance), true);
+		rightMotor.rotate(convertDistance(odometer.getWheelRadius(), distance), false);
+
+		leftMotor.stop(true);
+		rightMotor.stop(true);
+	}
+	
+	/**
+	 * Determine how much the motor must rotate for vehicle to reach a certain distance
+	 * 
+	 * @param radius
+	 * @param distance
+	 * @return
+	 */
+	private static int convertDistance(double radius, double distance) {
+		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
 	/*
@@ -114,11 +133,29 @@ public class Navigation {
 	}
 	
 	/*
-	 * Go foward a set distance in cm
+	 * Go forward a set distance in cm
 	 */
 	public void goForward(double distance) {
-		this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance, Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
+		leftMotor.setSpeed(FAST);
+		rightMotor.setSpeed(FAST);
+		leftMotor.rotate(convertDistance(odometer.getWheelRadius(),distance), true);
+		rightMotor.rotate(convertDistance(odometer.getWheelRadius(), distance), false);
 
+		leftMotor.stop(true);
+		rightMotor.stop(true);
+	}
+	
+	/*
+	 * Go backward a set distance in cm
+	 */
+	public void goBackward(double distance) {
+		leftMotor.setSpeed(-FAST);
+		rightMotor.setSpeed(-FAST);
+		leftMotor.rotate(convertDistance(odometer.getWheelRadius(),distance), true);
+		rightMotor.rotate(convertDistance(odometer.getWheelRadius(), distance), false);
+
+		leftMotor.stop(true);
+		rightMotor.stop(true);
 	}
 	
 	/**

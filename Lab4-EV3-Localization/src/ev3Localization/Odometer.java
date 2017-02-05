@@ -184,5 +184,9 @@ public class Odometer implements TimerListener {
 		else
 			return d - 360.0;
 	}
+	
+	public double getWheelRadius(){
+		return this.rightRadius;
+	}
 
 }
