@@ -31,35 +31,13 @@ public class LightLocalizer {
 		// when done travel to (0,0) and turn to 0 degrees
 		
 		// move to our estimated origin
-		
 		moveToOriginEstimate(); 
 		
-		int lineIndex=0;
-		//rotate counterclockwise
-		navigation.setSpeeds(-Navigation.SLOW , Navigation.SLOW);
+		// move our vehicle in a circle and collect data from light sensors
+		rotateLightSensor();
 		
-		while(lineIndex < 4){
-			this.colorSensor.fetchSample(colorData, 0);
-			if(colorData[0] <0.25){
-				lightData[lineIndex]=odo.getAng();
-				lineIndex++;
-				Sound.beep();
-			}
-		}
-		
-		navigation.stop();
-		//compute difference in angles
-		double deltaThetaY= (lightData[3]-lightData[1]);
-		double deltaThetaX= (lightData[2]-lightData[0]);
-		
-		//use trig to determine position of the robot 
-		double Xnew = (-1)*SENSOR_DISTANCE*Math.cos(Math.PI*deltaThetaX/(2*180));
-		double Ynew = (-1)*SENSOR_DISTANCE*Math.cos(Math.PI*deltaThetaY/(2*180));
-		
-		//set new "corrected" position
-		odo.setPosition(new double [] {Xnew, Ynew, Math.atan2(Ynew, Xnew)+180+2 }, new boolean [] {true, true, true});
-		
-		//add 2 for correction purposes determined experimentally 
+		// correct position of our robot using light sensor data
+		correctPositionUsingLightSensorData();
 		
 		//travel to 0,0 then turn to the 0 angle
 		navigation.travelTo(0, 0);
@@ -85,6 +63,39 @@ public class LightLocalizer {
  		//move forward so that the middle point of the robot is approximatelly on 0,0
  		navigation.goForward(SENSOR_DISTANCE);
  		navigation.stop();
+	}
+	
+	/** 
+	 * A method to rotate our vehicle and collect data from light sensors
+	 */
+	private void rotateLightSensor() {
+		navigation.setSpeeds(-Navigation.SLOW , Navigation.SLOW);
+		int lineIndex=0;
+		while(lineIndex < 4){
+			this.colorSensor.fetchSample(colorData, 0);
+			if(colorData[0] <0.25){
+				lightData[lineIndex]=odo.getAng();
+				lineIndex++;
+				Sound.beep();
+			}
+		}
+		navigation.stop();
+	}
+	
+	/**
+	 * A method to correct the position of our robot using light sensor data
+	 */
+	private void correctPositionUsingLightSensorData() {
+		//compute difference in angles
+		double deltaThetaY= (lightData[3]-lightData[1]);
+		double deltaThetaX= (lightData[2]-lightData[0]);
+		
+		//use trig to determine position of the robot 
+		double Xnew = (-1)*SENSOR_DISTANCE*Math.cos(Math.PI*deltaThetaX/(2*180));
+		double Ynew = (-1)*SENSOR_DISTANCE*Math.cos(Math.PI*deltaThetaY/(2*180));
+		
+		//set new "corrected" position
+		odo.setPosition(new double [] {Xnew, Ynew, Math.atan2(Ynew, Xnew)+180 }, new boolean [] {true, true, true});
 	}
 
 }
