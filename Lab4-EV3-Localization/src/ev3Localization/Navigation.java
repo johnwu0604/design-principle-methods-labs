@@ -14,7 +14,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Navigation {
 	final static int FAST = 200, SLOW = 100, ACCELERATION = 500;
-	final static double DEG_ERR = 3.0, CM_ERR = 1.0;
+	final static double DEG_ERR = 1.0, CM_ERR = 1.0;
 	private Odometer odometer;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 
@@ -33,26 +33,28 @@ public class Navigation {
 	/*
 	 * Functions to set the motor speeds jointly
 	 */
-	public void setSpeeds(float lSpd, float rSpd) {
-		this.leftMotor.setSpeed(lSpd);
-		this.rightMotor.setSpeed(rSpd);
-		if (lSpd < 0)
-			this.leftMotor.backward();
-		else
-			this.leftMotor.forward();
-		if (rSpd < 0)
-			this.rightMotor.backward();
-		else
-			this.rightMotor.forward();
-	}
+//	public void setSpeeds(float lSpd, float rSpd) {
+//		this.leftMotor.setSpeed(lSpd);
+//		this.rightMotor.setSpeed(rSpd);
+//		if (lSpd < 0)
+//			this.leftMotor.backward();
+//		else
+//			this.leftMotor.forward();
+//		if (rSpd < 0)
+//			this.rightMotor.backward();
+//		else
+//			this.rightMotor.forward();
+//	}
 
 	public void setSpeeds(int lSpd, int rSpd) {
 		this.leftMotor.setSpeed(lSpd);
 		this.rightMotor.setSpeed(rSpd);
+		
 		if (lSpd < 0)
 			this.leftMotor.backward();
 		else
 			this.leftMotor.forward();
+		
 		if (rSpd < 0)
 			this.rightMotor.backward();
 		else
@@ -77,8 +79,13 @@ public class Navigation {
 		double deltaX = x - odometer.getX();
 		double deltaY = y - odometer.getY();
 		
+		// calculate the minimum angle
+		double minAngle = Math.atan2( deltaY, deltaX)* (180.0 / Math.PI);
+		
+		if (minAngle < 0)
+			minAngle += 360.0;
 		// turn to the minimum angle
-		turnTo(odometer.getAng(), true);
+		turnTo(minAngle,true);
 		
 		// calculate the distance to next point
 		double distance  = Math.hypot(deltaX, deltaY);
@@ -90,7 +97,7 @@ public class Navigation {
 		rightMotor.rotate(convertDistance(odometer.getWheelRadius(), distance), false);
 
 		leftMotor.stop(true);
-		rightMotor.stop(true);
+		rightMotor.stop(false);
 	}
 	
 	/**
@@ -128,7 +135,8 @@ public class Navigation {
 		}
 
 		if (stop) {
-			this.setSpeeds(0, 0);
+			this.leftMotor.stop(true);
+			this.rightMotor.stop(false);
 		}
 	}
 	
@@ -136,8 +144,8 @@ public class Navigation {
 	 * Go forward a set distance in cm
 	 */
 	public void goForward(double distance) {
-		leftMotor.setSpeed(FAST);
-		rightMotor.setSpeed(FAST);
+		leftMotor.setSpeed(SLOW);
+		rightMotor.setSpeed(SLOW);
 		leftMotor.rotate(convertDistance(odometer.getWheelRadius(),distance), true);
 		rightMotor.rotate(convertDistance(odometer.getWheelRadius(), distance), false);
 
@@ -162,8 +170,8 @@ public class Navigation {
 	 * A method to stop our motors
 	 */
 	public void stop() {
-		this.leftMotor.stop();
-		this.rightMotor.stop();
+		this.leftMotor.stop(true);
+		this.rightMotor.stop(false);
 	}
 	
 }

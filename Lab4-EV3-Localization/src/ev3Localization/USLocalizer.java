@@ -1,5 +1,6 @@
 package ev3Localization;
 
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 public class USLocalizer {
@@ -13,12 +14,21 @@ public class USLocalizer {
 	private LocalizationType locType;
 	private Navigation navigation;
 	
+	private EV3LargeRegulatedMotor leftMotor, rightMotor;
+	
+	
 	public USLocalizer(Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
 		this.odo = odo;
 		this.usSensor = usSensor;
 		this.usData = usData;
 		this.locType = locType;
 		this.navigation = new Navigation(odo);
+		
+		EV3LargeRegulatedMotor[] motors = this.odo.getMotors();
+		this.leftMotor = motors[0];
+		this.rightMotor = motors[1];
+		leftMotor.setAcceleration(Navigation.ACCELERATION);
+		rightMotor.setAcceleration(Navigation.ACCELERATION);
 	}
 	
 	public void doLocalization() {
