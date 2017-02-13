@@ -8,7 +8,7 @@ public class Odometer extends Thread {
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	
 	// variables used for determining position
-	private double x, y, theta, track, wheel_circum;
+	private double x, y, theta, track, wheelCircum;
 	private int currentLeftMotorTachoCount, currentRightMotorTachoCount,
 				prevLeftMotorTachoCount, prevRightMotorTachoCount;
 	
@@ -30,7 +30,7 @@ public class Odometer extends Thread {
 		this.prevLeftMotorTachoCount = 0;
 		this.prevRightMotorTachoCount = 0;
 		this.track = Lab5.TRACK;
-		this.wheel_circum = Math.PI*2*Lab5.RADIUS;
+		this.wheelCircum = Math.PI*2*Lab5.RADIUS;
 		lock = new Object();
 	}
 
@@ -52,8 +52,8 @@ public class Odometer extends Thread {
 			int rightDeltaTacho = currentRightMotorTachoCount - prevRightMotorTachoCount;
 			
 			// Use our change in rotation values to calculate displacement of each wheel
-			double leftMotorDisplacement = wheel_circum*leftDeltaTacho/360;
-			double rightMotorDisplacement = wheel_circum*rightDeltaTacho/360;
+			double leftMotorDisplacement = wheelCircum*leftDeltaTacho/360;
+			double rightMotorDisplacement = wheelCircum*rightDeltaTacho/360;
 			
 			// angle at which our vehicle changed
 			double thetaChange = ( leftMotorDisplacement - rightMotorDisplacement )/track;

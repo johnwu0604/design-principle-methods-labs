@@ -97,11 +97,12 @@ public class Lab5 {
 			t.clear();
 
 			// ask the user whether the motors should drive in a square or float
-			t.drawString("          ^          ", 0, 0);
-			t.drawString("       Forward       ", 0, 1);
-			t.drawString(" < Left   |  Right > ", 0, 2);
-			t.drawString("        Quit         ", 0, 3);
-			t.drawString("          v          ", 0, 4);
+			t.drawString("                ", 0, 0);
+			t.drawString("       ^        ", 0, 1);
+			t.drawString("    Forward     ", 0, 2);
+			t.drawString("< Left | Right >", 0, 3);
+			t.drawString("     Quit       ", 0, 4);
+			t.drawString("       v        ", 0, 5);
 			
 			buttonChoice = Button.waitForAnyPress();
 		} while (buttonChoice != Button.ID_LEFT
