@@ -1,4 +1,4 @@
-# ECSE 211 - Design Principle and Mechanisms (DPM)
+# Design Principle and Mechanisms (DPM) Labs
 
 DPM is a robotics design course at McGill University. This repository holds the source code for all the labs.
 
