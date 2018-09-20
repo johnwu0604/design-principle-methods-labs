@@ -1,4 +1,4 @@
-# Design Principle and Mechanisms (DPM) Labs 
+# Design Principle and Methods (DPM) Labs 
 
 **IF YOU ARE USING THIS REPOSITORY FOR DPM RIGHT NOW, PLEASE STAR THE REPO FOR COMMON COURTESY :) AND GOOD LUCK ;)**
 
