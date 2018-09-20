@@ -1,8 +1,6 @@
-# Design Principle and Mechanisms (DPM) Labs
+# Design Principle and Mechanisms (DPM) Labs - IF YOU ARE USING THIS REPOSITORY FOR DPM RIGHT NOW, PLEASE STAR THE REPO FOR COMMON COURTESY :) AND GOOD LUCK ;)
 
 DPM is a robotics design course at McGill University. This repository holds the source code for all the labs. 
-
-IF YOU ARE USING THIS REPOSITORY FOR DPM RIGHT NOW, PLEASE STAR THE REPO FOR COMMON COURTESY :) AND GOOD LUCK ;)
 
 ### Lab 1 - Wall Follower
 
